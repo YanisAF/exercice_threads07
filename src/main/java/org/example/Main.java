@@ -7,45 +7,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Main {
-    private static AtomicInteger counter = new AtomicInteger(0);
-
     public static void main(String[] args) throws InterruptedException {
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        AtomicInteger counter = new AtomicInteger(0);
 
-//        Thread[] threads = createAtomicThreads();
-//        for (Thread thread : threads) thread.start();
-//        for (Thread thread : threads) thread.join();
-//        System.out.println("Programme terminé");
-    }
+        executor.scheduleAtFixedRate(() -> {
+            int i = counter.incrementAndGet();
+            System.out.println("Message périodique "+i);
 
-    public static void showScheduledExecution() throws InterruptedException {
-        ScheduledExecutorService scheduled = Executors.newScheduledThreadPool(5);
+            if (i == 5){
+                executor.shutdown();
+                System.out.println("Programme terminé");
+            }
+        }, 1, 2, TimeUnit.SECONDS);
 
-        scheduled.schedule(() -> System.out.println("Message périodique 1 !!! "), 1, TimeUnit.SECONDS);
-
-        scheduled.schedule(() -> System.out.println("Message périodique 2 !!! "), 3, TimeUnit.SECONDS);
-
-        scheduled.schedule(() -> System.out.println("Message périodique 3 !!! "), 5, TimeUnit.SECONDS);
-
-        scheduled.schedule(() -> System.out.println("Message périodique 4 !!! "), 7, TimeUnit.SECONDS);
-
-        scheduled.schedule(() -> System.out.println("Message périodique 5 !!! "), 9, TimeUnit.SECONDS);
-
-        scheduled.shutdown();
-
-    }
-
-//    private static Thread[] createAtomicThreads() throws InterruptedException {
-//        Thread[] threads = new Thread[1];
-//        for (int i = 0; i < 5; i++) {
-//            threads[i] = new Thread(() -> {
-//                for (int j = 0; j < 5; j++) {
-//                    try {
-//                        showScheduledExecution();
-//                    } catch (InterruptedException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                }
-//            });
-//        } return threads;
     }
 }
